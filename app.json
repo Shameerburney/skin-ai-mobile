@@ -22,9 +22,11 @@
       ]
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.sburney.skinaidiagnostics"
     },
     "android": {
+      "package": "com.sburney.skinaidiagnostics",
       "adaptiveIcon": {
         "backgroundColor": "#0c0e14"
       }
