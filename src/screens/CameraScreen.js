@@ -6,7 +6,6 @@ import {
   TouchableOpacity,
   Dimensions,
   ActivityIndicator,
-  SafeAreaView,
   Platform,
 } from 'react-native';
 import { CameraView, useCameraPermissions } from 'expo-camera';
@@ -15,8 +14,8 @@ import { colors } from '../theme/colors';
 import { Ionicons } from '@expo/vector-icons';
 
 const { width, height } = Dimensions.get('window');
-const ovalWidth = Math.min(width * 0.76, 320);
-const ovalHeight = Math.min(height * 0.44, 420);
+const ovalWidth = Math.min(width * 0.74, 300);
+const ovalHeight = Math.min(height * 0.44, 400);
 
 export default function CameraScreen({ onClose, onPhotoCaptured }) {
   const [permission, requestPermission] = useCameraPermissions();
@@ -35,21 +34,21 @@ export default function CameraScreen({ onClose, onPhotoCaptured }) {
 
   if (!permission.granted) {
     return (
-      <SafeAreaView style={styles.centerContainer}>
+      <View style={styles.centerContainer}>
         <View style={styles.permIconBox}>
           <Ionicons name="camera-outline" size={48} color={colors.primary} />
         </View>
         <Text style={styles.permTitle}>Camera Access Required</Text>
         <Text style={styles.permDesc}>
-          SkinAI uses real-time facial scanning to analyze your skin type and health. Please enable camera access to continue.
+          SkinAI uses real-time facial scanning to evaluate your skin health. Please allow camera access to continue.
         </Text>
         <TouchableOpacity style={styles.permButton} onPress={requestPermission} activeOpacity={0.85}>
           <Text style={styles.permButtonText}>Enable Camera</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.permCancel} onPress={onClose}>
-          <Text style={styles.permCancelText}>Go Back</Text>
+          <Text style={styles.permCancelText}>Cancel</Text>
         </TouchableOpacity>
-      </SafeAreaView>
+      </View>
     );
   }
 
@@ -78,7 +77,7 @@ export default function CameraScreen({ onClose, onPhotoCaptured }) {
           });
         }
       } catch (err) {
-        alert('Could not capture photo: ' + err.message);
+        alert('Could not take photo: ' + err.message);
       } finally {
         setCapturing(false);
       }
@@ -107,105 +106,110 @@ export default function CameraScreen({ onClose, onPhotoCaptured }) {
   };
 
   return (
-    <View style={styles.container}>
-      {/* 1. Underlying Native Camera Stream (Zero children to avoid iOS layout clipping) */}
+    <View style={styles.fullScreen}>
+      {/* 1. Full Screen Native Camera Preview Layer */}
       <CameraView
-        style={StyleSheet.absoluteFillObject}
+        style={styles.cameraStream}
         facing={facing}
         enableTorch={flash === 'on'}
         ref={cameraRef}
       />
 
-      {/* 2. Top-level Floating Overlay Container */}
-      <SafeAreaView style={styles.overlayContainer} pointerEvents="box-none">
-        {/* Top Header Controls */}
-        <View style={styles.topHeader}>
-          <TouchableOpacity style={styles.circleBtn} onPress={onClose} activeOpacity={0.7}>
-            <Ionicons name="close" size={24} color="#ffffff" />
-          </TouchableOpacity>
+      {/* 2. Top Header Controls (Anchored to top safe area) */}
+      <View style={styles.topHeader}>
+        <TouchableOpacity style={styles.circleButton} onPress={onClose} activeOpacity={0.75}>
+          <Ionicons name="close" size={24} color="#ffffff" />
+        </TouchableOpacity>
 
-          <View style={styles.statusPill}>
-            <View style={styles.liveIndicator} />
-            <Text style={styles.statusPillText}>AI Facial Scanner</Text>
-          </View>
-
-          <View style={styles.topRightGroup}>
-            <TouchableOpacity style={styles.circleBtn} onPress={toggleFlash} activeOpacity={0.7}>
-              <Ionicons
-                name={flash === 'on' ? 'flash' : 'flash-off'}
-                size={20}
-                color={flash === 'on' ? '#f59e0b' : '#ffffff'}
-              />
-            </TouchableOpacity>
-          </View>
+        <View style={styles.scannerBadge}>
+          <View style={styles.liveGreenDot} />
+          <Text style={styles.scannerBadgeText}>AI Live Scanner</Text>
         </View>
 
-        {/* Center Face Alignment Oval Guide */}
-        <View style={styles.centerArea} pointerEvents="none">
-          <View style={styles.faceOval}>
-            {/* Elegant Corner Reticles */}
-            <View style={[styles.corner, styles.cornerTL]} />
-            <View style={[styles.corner, styles.cornerTR]} />
-            <View style={[styles.corner, styles.cornerBL]} />
-            <View style={[styles.corner, styles.cornerBR]} />
-          </View>
-          <View style={styles.tipBubble}>
-            <Ionicons name="sparkles" size={14} color={colors.primary} />
-            <Text style={styles.tipText}>Center your face • Natural lighting</Text>
-          </View>
+        <TouchableOpacity style={styles.circleButton} onPress={toggleFlash} activeOpacity={0.75}>
+          <Ionicons
+            name={flash === 'on' ? 'flash' : 'flash-off'}
+            size={20}
+            color={flash === 'on' ? '#f59e0b' : '#ffffff'}
+          />
+        </TouchableOpacity>
+      </View>
+
+      {/* 3. Center Face Guide Oval (Anchored to optical upper-middle) */}
+      <View style={styles.centerGuide} pointerEvents="none">
+        <View style={styles.faceOval}>
+          {/* Corner Reticles */}
+          <View style={[styles.corner, styles.cornerTL]} />
+          <View style={[styles.corner, styles.cornerTR]} />
+          <View style={[styles.corner, styles.cornerBL]} />
+          <View style={[styles.corner, styles.cornerBR]} />
         </View>
 
-        {/* Bottom Shutter Dock Bar */}
-        <View style={styles.bottomDock}>
-          {/* Gallery Pick Shortcut */}
-          <TouchableOpacity
-            style={styles.dockSideBtn}
-            onPress={handlePickFromGallery}
-            activeOpacity={0.75}
-          >
-            <View style={styles.dockIconCircle}>
-              <Ionicons name="images" size={22} color="#ffffff" />
-            </View>
-            <Text style={styles.dockBtnLabel}>Gallery</Text>
-          </TouchableOpacity>
-
-          {/* Prominent High-Visibility Shutter Button */}
-          <TouchableOpacity
-            style={styles.shutterRing}
-            onPress={handleCapture}
-            disabled={capturing}
-            activeOpacity={0.8}
-          >
-            <View style={styles.shutterCenter}>
-              {capturing ? (
-                <ActivityIndicator size="small" color="#090b10" />
-              ) : (
-                <View style={styles.shutterInnerDot} />
-              )}
-            </View>
-          </TouchableOpacity>
-
-          {/* Flip Camera */}
-          <TouchableOpacity
-            style={styles.dockSideBtn}
-            onPress={toggleFacing}
-            activeOpacity={0.75}
-          >
-            <View style={styles.dockIconCircle}>
-              <Ionicons name="camera-reverse" size={22} color="#ffffff" />
-            </View>
-            <Text style={styles.dockBtnLabel}>Flip</Text>
-          </TouchableOpacity>
+        <View style={styles.tipBox}>
+          <Ionicons name="sparkles" size={13} color={colors.primary} />
+          <Text style={styles.tipText}>Center face • Keep natural lighting</Text>
         </View>
-      </SafeAreaView>
+      </View>
+
+      {/* 4. Bottom Shutter Dock Bar (Anchored strictly to bottom of screen) */}
+      <View style={styles.bottomDock}>
+        {/* Gallery Pick Shortcut */}
+        <TouchableOpacity
+          style={styles.sideDockAction}
+          onPress={handlePickFromGallery}
+          activeOpacity={0.7}
+        >
+          <View style={styles.sideIconCircle}>
+            <Ionicons name="images-outline" size={22} color="#ffffff" />
+          </View>
+          <Text style={styles.sideDockLabel}>Gallery</Text>
+        </TouchableOpacity>
+
+        {/* Big High-Visibility Shutter Button */}
+        <TouchableOpacity
+          style={styles.shutterRing}
+          onPress={handleCapture}
+          disabled={capturing}
+          activeOpacity={0.8}
+        >
+          <View style={styles.shutterInnerCircle}>
+            {capturing ? (
+              <ActivityIndicator size="small" color="#090b10" />
+            ) : (
+              <View style={styles.shutterCore} />
+            )}
+          </View>
+        </TouchableOpacity>
+
+        {/* Flip Camera */}
+        <TouchableOpacity
+          style={styles.sideDockAction}
+          onPress={toggleFacing}
+          activeOpacity={0.7}
+        >
+          <View style={styles.sideIconCircle}>
+            <Ionicons name="camera-reverse-outline" size={24} color="#ffffff" />
+          </View>
+          <Text style={styles.sideDockLabel}>Flip</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
+  fullScreen: {
+    width: width,
+    height: height,
     backgroundColor: '#000000',
+    position: 'relative',
+  },
+  cameraStream: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: width,
+    height: height,
   },
   centerContainer: {
     flex: 1,
@@ -223,7 +227,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginBottom: 20,
     borderWidth: 1,
-    borderColor: 'rgba(0, 242, 254, 0.25)',
+    borderColor: 'rgba(0, 242, 254, 0.3)',
   },
   permTitle: {
     fontSize: 22,
@@ -261,179 +265,183 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '600',
   },
-  overlayContainer: {
-    ...StyleSheet.absoluteFillObject,
-    justifyContent: 'space-between',
-  },
+
+  // TOP HEADER (Absolute top)
   topHeader: {
+    position: 'absolute',
+    top: Platform.OS === 'ios' ? 52 : 36,
+    left: 0,
+    right: 0,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 20,
-    paddingTop: Platform.OS === 'android' ? 20 : 10,
+    zIndex: 20,
   },
-  circleBtn: {
+  circleButton: {
     width: 44,
     height: 44,
     borderRadius: 22,
-    backgroundColor: 'rgba(12, 14, 20, 0.65)',
+    backgroundColor: 'rgba(9, 11, 16, 0.65)',
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.18)',
+    borderColor: 'rgba(255, 255, 255, 0.2)',
   },
-  statusPill: {
+  scannerBadge: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(12, 14, 20, 0.75)',
+    gap: 8,
+    backgroundColor: 'rgba(9, 11, 16, 0.75)',
     paddingHorizontal: 14,
     paddingVertical: 7,
     borderRadius: 20,
     borderWidth: 1,
-    borderColor: 'rgba(0, 242, 254, 0.3)',
-    gap: 8,
+    borderColor: 'rgba(0, 242, 254, 0.35)',
   },
-  liveIndicator: {
+  liveGreenDot: {
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: colors.primary,
+    backgroundColor: '#10b981',
   },
-  statusPillText: {
+  scannerBadgeText: {
     color: '#f8fafc',
     fontSize: 13,
     fontWeight: '600',
-    letterSpacing: 0.3,
   },
-  topRightGroup: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 10,
-  },
-  centerArea: {
-    flex: 1,
+
+  // CENTER GUIDE (Absolute optical center)
+  centerGuide: {
+    position: 'absolute',
+    top: height * 0.16,
+    left: 0,
+    right: 0,
     alignItems: 'center',
     justifyContent: 'center',
+    zIndex: 10,
   },
   faceOval: {
     width: ovalWidth,
     height: ovalHeight,
     borderRadius: ovalWidth / 2,
     borderWidth: 2,
-    borderColor: 'rgba(0, 242, 254, 0.55)',
+    borderColor: 'rgba(0, 242, 254, 0.6)',
     backgroundColor: 'transparent',
     position: 'relative',
   },
   corner: {
     position: 'absolute',
-    width: 24,
-    height: 24,
+    width: 22,
+    height: 22,
     borderColor: colors.primary,
   },
   cornerTL: {
-    top: -3,
-    left: -3,
+    top: -2,
+    left: -2,
     borderTopWidth: 4,
     borderLeftWidth: 4,
     borderTopLeftRadius: 8,
   },
   cornerTR: {
-    top: -3,
-    right: -3,
+    top: -2,
+    right: -2,
     borderTopWidth: 4,
     borderRightWidth: 4,
     borderTopRightRadius: 8,
   },
   cornerBL: {
-    bottom: -3,
-    left: -3,
+    bottom: -2,
+    left: -2,
     borderBottomWidth: 4,
     borderLeftWidth: 4,
     borderBottomLeftRadius: 8,
   },
   cornerBR: {
-    bottom: -3,
-    right: -3,
+    bottom: -2,
+    right: -2,
     borderBottomWidth: 4,
     borderRightWidth: 4,
     borderBottomRightRadius: 8,
   },
-  tipBubble: {
+  tipBox: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
-    marginTop: 18,
-    backgroundColor: 'rgba(12, 14, 20, 0.75)',
+    marginTop: 16,
+    backgroundColor: 'rgba(9, 11, 16, 0.75)',
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 20,
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.1)',
+    borderColor: 'rgba(255, 255, 255, 0.15)',
   },
   tipText: {
     color: '#e2e8f0',
-    fontSize: 13,
+    fontSize: 12,
     fontWeight: '600',
   },
+
+  // BOTTOM DOCK (Absolute bottom)
   bottomDock: {
+    position: 'absolute',
+    bottom: Platform.OS === 'ios' ? 44 : 28,
+    left: 0,
+    right: 0,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-around',
     paddingHorizontal: 30,
-    paddingBottom: Platform.OS === 'ios' ? 24 : 32,
-    paddingTop: 16,
-    backgroundColor: 'rgba(9, 11, 16, 0.85)',
-    borderTopWidth: 1,
-    borderTopColor: 'rgba(255, 255, 255, 0.08)',
+    zIndex: 20,
   },
-  dockSideBtn: {
+  sideDockAction: {
     alignItems: 'center',
     justifyContent: 'center',
-    width: 60,
+    width: 64,
   },
-  dockIconCircle: {
-    width: 46,
-    height: 46,
-    borderRadius: 23,
-    backgroundColor: 'rgba(255, 255, 255, 0.12)',
+  sideIconCircle: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: 'rgba(9, 11, 16, 0.65)',
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 4,
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.18)',
+    borderColor: 'rgba(255, 255, 255, 0.25)',
+    marginBottom: 4,
   },
-  dockBtnLabel: {
-    color: '#94a3b8',
+  sideDockLabel: {
+    color: '#cbd5e1',
     fontSize: 11,
     fontWeight: '600',
   },
   shutterRing: {
-    width: 84,
-    height: 84,
-    borderRadius: 42,
+    width: 82,
+    height: 82,
+    borderRadius: 41,
     borderWidth: 4,
     borderColor: '#ffffff',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    backgroundColor: 'rgba(255, 255, 255, 0.25)',
   },
-  shutterCenter: {
-    width: 68,
-    height: 68,
-    borderRadius: 34,
+  shutterInnerCircle: {
+    width: 66,
+    height: 66,
+    borderRadius: 33,
     backgroundColor: '#ffffff',
     alignItems: 'center',
     justifyContent: 'center',
     shadowColor: colors.primary,
     shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.8,
+    shadowOpacity: 0.9,
     shadowRadius: 10,
     elevation: 8,
   },
-  shutterInnerDot: {
-    width: 58,
-    height: 58,
-    borderRadius: 29,
+  shutterCore: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
     backgroundColor: colors.primary,
   },
 });
