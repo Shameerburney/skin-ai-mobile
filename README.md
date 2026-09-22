@@ -287,6 +287,8 @@ If your network changes or you are hosting the backend on a remote domain:
 
 ---
 
-## 📄 License
+## 📄 License & Attribution Notice
 
-This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
+Copyright (c) 2026 **Shameer Burney**. All Rights Reserved.
+
+Use, reproduction, distribution, or adaptation of this software is **strictly prohibited without prominent and unaltered attribution to Shameer Burney**. Any unauthorized use without crediting Shameer Burney constitutes willful copyright infringement and will result in immediate DMCA takedown demands and legal consequences. See the [LICENSE](LICENSE) file for complete terms.

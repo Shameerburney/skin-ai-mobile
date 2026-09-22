@@ -1,21 +1,37 @@
-The MIT License (MIT)
+SOFTWARE LICENSE & COPYRIGHT NOTICE
 
-Copyright (c) 2015-present 650 Industries, Inc. (aka Expo)
+Copyright (c) 2026 Shameer Burney. All Rights Reserved.
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+==============================================================================
+TERMS OF USE AND MANDATORY ATTRIBUTION NOTICE
+==============================================================================
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+1. MANDATORY ATTRIBUTION REQUIREMENT:
+You are strictly not allowed to use, copy, modify, merge, publish, distribute, 
+sublicense, commercialize, or deploy this software, its user interface, 
+algorithms, or any associated documentation without prominent and explicit 
+attribution to the original author: SHAMEER BURNEY. 
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+Every instance, fork, derivative work, distribution, or public display of this 
+software must prominently feature the author's full name ("Shameer Burney") 
+and link to the original repository.
+
+2. COPYRIGHT INFRINGEMENT & TAKEDOWN CONSEQUENCES:
+If any individual, company, or organization is found using, distributing, 
+hosting, or displaying this software or its derivative works without full, 
+unaltered attribution to Shameer Burney:
+- It constitutes immediate and willful copyright infringement.
+- You will be issued an immediate formal takedown notice (including Digital 
+  Millennium Copyright Act / DMCA notices) requiring the immediate removal 
+  of the software from all platforms, hosts, repositories, and app stores.
+- Failure to immediately comply with takedown demands will result in further 
+  legal consequences, including copyright infringement claims, claims for 
+  statutory damages, and legal remedies to the fullest extent permitted by law.
+
+3. DISCLAIMER OF WARRANTY:
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE 
+AUTHOR (SHAMEER BURNEY) BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, 
+WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR 
+IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
