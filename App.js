@@ -116,18 +116,23 @@ export default function App() {
     setCurrentScreen('home');
   };
 
-  return (
-    <SafeAreaView style={styles.safeArea}>
-      <StatusBar barStyle="light-content" backgroundColor={colors.background} />
-
-      {/* When camera is open, show full-screen camera without header */}
-      {currentScreen === 'camera' ? (
+  if (currentScreen === 'camera') {
+    return (
+      <View style={{ flex: 1, backgroundColor: '#000' }}>
+        <StatusBar barStyle="light-content" translucent backgroundColor="transparent" />
         <CameraScreen
           onClose={() => setCurrentScreen('home')}
           onPhotoCaptured={handlePhotoCaptured}
         />
-      ) : (
-        <View style={styles.container}>
+      </View>
+    );
+  }
+
+  return (
+    <SafeAreaView style={styles.safeArea}>
+      <StatusBar barStyle="light-content" backgroundColor={colors.background} />
+
+      <View style={styles.container}>
           {/* Top Brand & Status Header */}
           <Header
             backendStatus={backendStatus}
@@ -168,7 +173,6 @@ export default function App() {
             )}
           </View>
         </View>
-      )}
 
       {/* Server Config & Diagnostic Modal */}
       <ServerConfigModal
