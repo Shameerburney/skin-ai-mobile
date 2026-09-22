@@ -7,6 +7,11 @@
     "orientation": "portrait",
     "userInterfaceStyle": "dark",
     "backgroundColor": "#0c0e14",
+    "extra": {
+      "eas": {
+        "projectId": "8fbc1663-09d3-4af4-8293-67f7cf4add8c"
+      }
+    },
     "plugins": [
       [
         "expo-camera",
